@@ -9,53 +9,48 @@ public class MySQL {
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/otus";
     private static final String USER = "root";
     private static final String PASSWORD = "qwerty123";
-//Куратор
-    public static final String CREATE_CURATOR_SQL = "CREATE TABLE curator(id_person int auto_increment primary key, fio_curator varchar (60));";
+    //Куратор
+    public static final String create_curator_sql = "CREATE TABLE curator(id_person int auto_increment primary key, fio_curator varchar (60));";
 
     public void createCuratorTable(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute(CREATE_CURATOR_SQL);
+            statement.execute(create_curator_sql);
         }
     }
-    private static final String INSERT_INTO_CURATOR = "INSERT INTO curator (fio_curator) VALUES(?),(?),(?),(?)";
-
-    public void insertDateIntoCurator(Connection connection) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(INSERT_INTO_CURATOR)) {
-            statement.setString(1, "Ivan Vladimirovich");
-            statement.setString(2, "Ivan Petrovich");
-            statement.setString(3, "Pavel Petrovich");
-            statement.setString(4, "Ilya Vladimirovich");
+    public void insertDateIntoCurator(String fio_curator) throws SQLException {
+        String insert_into_curator = "INSERT INTO curator (fio_curator) VALUES(?)";
+        try (Connection connection= DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(insert_into_curator)) {
+            statement.setString(1, fio_curator);
+            statement.executeUpdate();
         }
     }
-//Студенты
-    public static final String CREATE_STUDENT_SQL = "CREATE TABLE student(id_student int auto_increment primary key, fio_student varchar (60), sex varchar (10), id_group int);";
+    //Студенты
+    public static final String create_student_sql = "CREATE TABLE student(id_student int auto_increment primary key, fio_student varchar (60), sex varchar (10), id_group int);";
 
     public void createStudent(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute(CREATE_STUDENT_SQL);
+            statement.execute(create_student_sql);
         }
     }
-
-    public void insertDataIntoStudent(String fio, String sex, int id_group) throws SQLException {
-        String INSERT_INTO_STUDENT = "INSERT INTO student (fio, sex, id_group) VALUES(?,?,?)";
+    public void insertDataIntoStudent(String fio_student, String sex, int id_group) throws SQLException {
+        String insert_into_student = "INSERT INTO student (fio_student, sex, id_group) VALUES(?,?,?)";
         try (Connection connection= DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-                PreparedStatement statement = connection.prepareStatement(INSERT_INTO_STUDENT)) {
-            statement.setString(1, fio);
+             PreparedStatement statement = connection.prepareStatement(insert_into_student)) {
+            statement.setString(1, fio_student);
             statement.setString(2, sex);
             statement.setInt(3, id_group);
             statement.executeUpdate();
         }
-
     }
-//Группы
-    public static final String CREATE_GROUP_SQL = "CREATE TABLE groupp(id_groupp int auto_increment primary key, name varchar (60), id_curator varchar (5));";
+    //Группы
+    public static final String create_group_sql = "CREATE TABLE groupp(id_groupp int auto_increment primary key, name varchar (60), id_curator varchar (5));";
 
     public void createGroup(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute(CREATE_GROUP_SQL);
+            statement.execute(create_group_sql);
         }
     }
-
     public void insertDataIntoGroup(String name, int id_curator) throws SQLException {
         String insertGroup = "INSERT INTO groupp(name, id_curator) VALUES(?,?)";
         try (Connection connection= DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
@@ -65,10 +60,10 @@ public class MySQL {
             statement.executeUpdate();
         }
     }
-//Вывести на экран информацию о всех студентах включая название группы и имя куратора
+    //Вывести на экран информацию о всех студентах включая название группы и имя куратора
     private static final String selectSqlStudentGroupCurator ="SELECT otus.student.fio_student, otus.student.sex, otus.groupp.name, otus.curator.fio_curator\n" +
-        "FROM otus.groupp join otus.curator ON id_curator = id_person\n" +
-        "join otus.student ON id_group = id_groupp";
+            "FROM otus.groupp join otus.curator ON id_curator = id_person\n" +
+            "join otus.student ON id_group = id_groupp";
     public void listStudentGroupCurator (Connection connection) throws SQLException {
         System.out.println("Вывести на экран информацию о всех студентах включая название группы и имя куратора: ");
         try (Statement statement = connection.createStatement();
@@ -84,7 +79,7 @@ public class MySQL {
             }
         }
     }
-//Вывести на экран количество студентов
+    //Вывести на экран количество студентов
     public static final  String selectSqlNumberStudent = "SELECT COUNT(*) as count FROM otus.student";
     public void numberStudents (Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement();
@@ -96,8 +91,8 @@ public class MySQL {
             }
         }
     }
-//Вывести студенток
-public static final  String selectSqlFemaleStudent = "SELECT * FROM otus.student where sex = 'W'";
+    //Вывести студенток
+    public static final  String selectSqlFemaleStudent = "SELECT * FROM otus.student where sex = 'W'";
     public void femaleStudent  (Connection connection) throws SQLException {
         System.out.println("Вывести студенток: ");
         try (Statement statement = connection.createStatement();
@@ -113,7 +108,7 @@ public static final  String selectSqlFemaleStudent = "SELECT * FROM otus.student
             }
         }
     }
-//Вывести список групп с их кураторами
+    //Вывести список групп с их кураторами
     public static final  String selectListGroupListCurator = "SELECT  name, fio_curator FROM otus.groupp INNER JOIN otus.curator ON id_curator = id_person";
     public void listGroupCurator  (Connection connection) throws SQLException {
         System.out.println("Вывести список групп с их кураторами: ");
@@ -128,7 +123,7 @@ public static final  String selectSqlFemaleStudent = "SELECT * FROM otus.student
             }
         }
     }
-//Вывести список групп с их кураторами
+    //Вывести список групп с их кураторами
     public static final  String selectStudentGroup = "SELECT otus.student.fio_student, otus.groupp.name FROM otus.student, otus.groupp WHERE groupp.name = 'group2'";
     public void listStudentGroup  (Connection connection) throws SQLException {
         System.out.println("Вывести на экран студентов из определенной группы(поиск по имени группы): ");
@@ -143,29 +138,28 @@ public static final  String selectSqlFemaleStudent = "SELECT * FROM otus.student
             }
         }
     }
-//Обновить данные по группе сменив куратора
+    //Обновить данные по группе сменив куратора
     public static final  String UpdateGroup = "UPDATE otus.groupp SET id_curator = 4 WHERE id_groupp = 3";
-    public void UpdateGroupp  (Connection connection) throws SQLException {
+    public void updateGroupp  (Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             int res  = statement.executeUpdate(UpdateGroup);
             System.out.println("Обновление данных по группе сменив куратора" + res);
-            }
         }
+    }
 
     public static void main(String[] arg) throws SQLException {
         MySQL mySQL = new MySQL();
+        //Создание таблиц
         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD)) {
             mySQL.createCuratorTable(connection);
-            mySQL.insertDateIntoCurator(connection);
             mySQL.createStudent(connection);
             mySQL.createGroup(connection);
-            mySQL.listStudentGroupCurator(connection);
-            mySQL.numberStudents(connection);
-            mySQL.femaleStudent(connection);
-            mySQL.listGroupCurator(connection);
-            mySQL.listStudentGroup(connection);
-            mySQL.UpdateGroupp(connection);
         }
+        //Добавление куратора
+        mySQL.insertDateIntoCurator("Ivan Vladimirovich");
+        mySQL.insertDateIntoCurator("Ivan Petrovich");
+        mySQL.insertDateIntoCurator("Pavel Petrovich");
+        mySQL.insertDateIntoCurator("Ilya Vladimirovich");
         //Добавление студентов
          mySQL.insertDataIntoStudent("Timothy Wyatt Foster", "M", 1);
          mySQL.insertDataIntoStudent("Christopher Cody Allen", "M", 1);
@@ -186,7 +180,15 @@ public static final  String selectSqlFemaleStudent = "SELECT * FROM otus.student
          mySQL.insertDataIntoGroup("Group1", 1);
          mySQL.insertDataIntoGroup("Group2", 2);
          mySQL.insertDataIntoGroup("Group3", 3);
-
+        //Выведение результатов
+         try (Connection connection = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD)) {
+            mySQL.listStudentGroupCurator(connection);
+            mySQL.numberStudents(connection);
+            mySQL.femaleStudent(connection);
+            mySQL.listGroupCurator(connection);
+            mySQL.listStudentGroup(connection);
+            mySQL.updateGroupp(connection);
+        }
     }
 }
 
