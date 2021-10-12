@@ -5,14 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Runner {
-    private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/otus";
-    private static final String USER = "root";
-    private static final String PASSWORD = "qwerty123";
 
     public static void main(String[] arg) throws SQLException {
         MySQL mySQL = new MySQL();
         //Создание таблиц
-        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(Connect.CONNECTION_URL, Connect.USER, Connect.PASSWORD)) {
             mySQL.createCuratorTable(connection);
             mySQL.createStudent(connection);
             mySQL.createGroup(connection);
@@ -43,7 +40,7 @@ public class Runner {
         mySQL.insertDataIntoGroup("Group2", 2);
         mySQL.insertDataIntoGroup("Group3", 3);
         //Выведение результатов
-        try (Connection connection = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(Connect.CONNECTION_URL, Connect.USER, Connect.PASSWORD)) {
             mySQL.listStudentGroupCurator(connection);
             mySQL.numberStudents(connection);
             mySQL.femaleStudent(connection);

@@ -6,9 +6,6 @@ import java.util.List;
 
 public class MySQL {
 
-    private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/otus";
-    private static final String USER = "root";
-    private static final String PASSWORD = "qwerty123";
     //Куратор
     public static final String create_curator_sql = "CREATE TABLE curator(id_person int auto_increment primary key, fio_curator varchar (60));";
 
@@ -19,7 +16,7 @@ public class MySQL {
     }
     public void insertDateIntoCurator(String fio_curator) throws SQLException {
         String insert_into_curator = "INSERT INTO curator (fio_curator) VALUES(?)";
-        try (Connection connection= DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+        try (Connection connection= DriverManager.getConnection(Connect.CONNECTION_URL, Connect.USER, Connect.PASSWORD);
              PreparedStatement statement = connection.prepareStatement(insert_into_curator)) {
             statement.setString(1, fio_curator);
             statement.executeUpdate();
@@ -35,7 +32,7 @@ public class MySQL {
     }
     public void insertDataIntoStudent(String fio_student, String sex, int id_group) throws SQLException {
         String insert_into_student = "INSERT INTO student (fio_student, sex, id_group) VALUES(?,?,?)";
-        try (Connection connection= DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+        try (Connection connection= DriverManager.getConnection(Connect.CONNECTION_URL, Connect.USER, Connect.PASSWORD);
              PreparedStatement statement = connection.prepareStatement(insert_into_student)) {
             statement.setString(1, fio_student);
             statement.setString(2, sex);
@@ -53,7 +50,7 @@ public class MySQL {
     }
     public void insertDataIntoGroup(String name, int id_curator) throws SQLException {
         String insertGroup = "INSERT INTO groupp(name, id_curator) VALUES(?,?)";
-        try (Connection connection= DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+        try (Connection connection= DriverManager.getConnection(Connect.CONNECTION_URL, Connect.USER, Connect.PASSWORD);
              PreparedStatement statement = connection.prepareStatement(insertGroup)) {
             statement.setString(1, name );
             statement.setInt(2, id_curator);
