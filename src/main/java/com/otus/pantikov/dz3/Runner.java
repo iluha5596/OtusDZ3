@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class main {
+public class Runner {
     private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/otus";
     private static final String USER = "root";
     private static final String PASSWORD = "qwerty123";
